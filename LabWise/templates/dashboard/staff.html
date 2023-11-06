@@ -1,0 +1,63 @@
+{% extends 'partials/base.html' %}
+{% block title %}Staff Page{% endblock %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+{% include 'partials/topside.html' %}
+<div class="row my-4">
+    <div class="col-md-4">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="card card-body">
+            <h5>Add New Staff Account</h5>
+            <hr>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input class="btn btn-success btn-block" type="submit" value="Add">
+            </form>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <form class="input-group form-inline-flex my-2 my-lg-10 ">
+            <input class="form-control mr-sm-2" name="q" type="search" placeholder="Search" aria-label="Search">
+            <button class="input-group-btn btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form>
+
+
+        <table class="table bg-white">
+            
+            <thead class="bg-info text-white">
+                    
+                
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for staff in staff %}
+                <tr>
+                    <th scope="row"><a class="btn btn-info btn-sm"
+                            href="{% url 'dashboard-customer-detail' staff.id %}">View</a></th>
+                    <td>{{ staff.username }}</td>
+                    <td>{{ staff.email }}</td>
+                    <td>{{ staff.profile.phone }}</td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

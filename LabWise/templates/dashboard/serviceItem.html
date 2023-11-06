@@ -1,0 +1,65 @@
+{% extends 'partials/base.html' %}
+{% block title %}Service Items Page{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+{% include 'partials/topside.html' %}
+<div class="row my-4">
+    <div class="col-md-4">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="card card-body">
+            <h5>Add New Service Item</h5>
+            <hr>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input class="btn btn-success btn-block" type="submit" value="Add">
+            </form>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <table class="table bg-white">
+            <thead class="bg-info text-white">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">SerialNumber</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Activity</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for serviceItem in serviceItem %}
+                <tr>
+                    <td>{{ serviceItem.id }}</td>
+                    <td>{{ serviceItem.serialNumber }}</td>
+                    <td>{{ serviceItem.name }}</td>
+                    <td>{{ serviceItem.desc }}</td>
+                    {% if serviceItem.status == "Available" %}
+                    <td  class="alert alert-success">{{ serviceItem.status }}</td>
+                    {% else %}
+                    <td  class="alert alert-danger">{{ serviceItem.status }}</td>
+
+                    {% endif %}
+
+                    <td>
+                        <a class="btn btn-info btn-sm mr-2"
+                            href="{% url 'dashboard-serviceItem-edit' serviceItem.id %}">Edit</a>
+                        <a class="btn btn-danger btn-sm ml-2"
+                            href="{% url 'dashboard-serviceItem-delete' serviceItem.id %}">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

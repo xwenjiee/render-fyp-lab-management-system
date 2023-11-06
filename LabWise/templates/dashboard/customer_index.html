@@ -1,0 +1,75 @@
+{% load crispy_forms_tags %}
+<div>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    Make Booking Request
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="alert alert-info " role="alert">
+                            Fill out either the item or service to be booked.
+                          </div>
+
+                        {% csrf_token %}
+ 
+                        {{ form2 |crispy }}
+                        <div style="display:flex">
+                            <input style="margin-right:3px" class="btn btn-secondary " id="resetForm" type="reset"> 
+
+                            <input class="btn btn-info btn-block" type="submit" value="Make Request">
+    
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    Booking Records Information
+                </div>
+
+                <div class="card-body">
+                    <div class="alert alert-warning " role="alert">
+                        Your booking requests rejected by H.O.M.E Lab will be automatically deleted by the system and will not be displayed here.
+                      </div>
+                    <table class="table bg-white">
+                        <thead class="bg-info text-white">
+
+                            <tr>
+                                
+                                <th scope="col">Service Item</th>
+                                <th scope="col">Service</th>
+                                <th scope="col">Start Date and Time</th>
+                                <th scope="col">End Date and Time</th>
+                                <th scope="col">Booking Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in order %}
+                            {% if order.customer == user %}
+                            <tr>
+                                
+                                <td>{{ order.item }}</td>
+                                <td>{{ order.service }}</td>
+                                <td>{{ order.startDateTime }}</td>
+                                <td>{{ order.endDateTime }}</td>
+                                {% if order.bookingStatus == "Approved" %}
+                                <td  class="alert alert-success">{{ order.bookingStatus }}</td>
+                                {% elif order.bookingStatus == "Pending Approval" %}
+                                <td  class="alert alert-warning">{{ order.bookingStatus }}</td>
+                                {% elif order.bookingStatus == "Completed" %}
+                                <td  class="alert alert-primary">{{ order.bookingStatus }}</td>
+                                {% endif %}
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

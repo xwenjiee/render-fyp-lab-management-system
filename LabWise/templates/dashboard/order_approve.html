@@ -1,0 +1,23 @@
+
+{% extends 'partials/base.html' %}
+{% block title %}Booking Approval Page{% endblock %}
+
+{% block content %}
+
+<div class="row my-4">
+    <div class="col-md-6 offset-md-3">
+        <div class="border p-3 bg-white">
+            <h3>Approve Booking</h3>
+            <hr>
+            <form method="POST">
+                <div class="alert alert-success">
+                    <h4>Are you sure, you want to approve this booking?</h4>                </div>
+                {% csrf_token %}
+                {{ form }}
+                <a class="btn btn-secondary btn-sm" href="{% url 'dashboard-order' %}">Cancel</a>
+                <input class="btn btn-success btn-sm" type="submit" value="Confirm">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
