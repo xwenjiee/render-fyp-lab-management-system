@@ -7,6 +7,7 @@ from django.forms import ValidationError
 
 class Category(models.Model):
     name = models.CharField(max_length=100, null=True)
+    desc = models.CharField("Description", max_length=500, null=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -21,7 +22,9 @@ class Item(models.Model):
             )
 
     name = models.CharField(max_length=100, null=True)
-    serialNumber = models.CharField(max_length=500, null=True, default=None)
+    serialNumber = models.CharField(
+        "Serial Number", max_length=500, null=True, default=None
+    )
     consumable = models.BooleanField(null=False)
     quantity = models.PositiveIntegerField(null=True)
     category = models.ForeignKey(

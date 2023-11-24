@@ -10,6 +10,9 @@
             <hr>
             <form method="POST">
                 {% csrf_token %}
+                <div class="alert alert-info " role="alert">
+                    If you are a <b>Sunway Staff or Student,</b> it is recommended to set your <b>username </b>as your <b>ID.</b>
+                  </div>
                 {{ form|crispy }}
                 <input class="btn btn-success" type="submit" value="Register">
             </form>

@@ -1,0 +1,72 @@
+
+{% extends 'partials/base.html' %}
+{% block title %}Bookings Page{% endblock %}
+
+{% block content %}
+<div class="row my-4 ">
+<div class="col-md-100 " style="width:100%; margin-bottom:50px">
+    <div class="h4"  style="width:100%; margin-bottom:20px" >Rent Items</div>
+    <table id="myTable" class="table bg-white \">
+        <thead class="bg-info text-white">
+            <tr>
+
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for serviceItem in serviceItem %}
+            <tr>
+
+                <td>{{ serviceItem.name }}</td>
+                <td>{{ serviceItem.desc }}</td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <div class="col-md-100 " style="width:100%">
+        <div class="h4"  style="width:100%; margin-bottom:20px; " >Services</div>
+        <table id="myTable2" class="table bg-white">
+        <thead class="bg-info text-white" >
+            <tr >
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for service in service %}
+            <tr>
+
+                <td>{{ service.name }}</td>
+                <td>{{ service.desc }}</td>
+                
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+    <script>
+        let table = new DataTable('#myTable', {
+            // options
+        });
+        let table2 = new DataTable('#myTable2', {
+            // options
+        });
+    </script>
+</div>
+</div>
+
+{% endblock %}

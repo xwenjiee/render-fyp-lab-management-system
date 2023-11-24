@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "dashboard.apps.DashboardConfig",
     "user.apps.UserConfig",
-    "crispy_forms",
     "crispy_bootstrap4",
+    "crispy_forms",
 ]
 
 MIDDLEWARE = [
@@ -117,7 +117,7 @@ TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

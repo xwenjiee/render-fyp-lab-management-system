@@ -3,6 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+<script src="https://unpkg.com/html5-qrcode"></script>
 {% include 'partials/topside.html' %}
 <div class="row my-4">
     <div class="col-md-4">
@@ -18,15 +19,106 @@
             <hr>
             <form method="POST">
                 {% csrf_token %}
+                <input type="button"class="btn btn-info btn-block mb-2" id="wtf" onclick="myFunction()" value="Scan to input Serial Number">
+                <div id="reader" style="width: 100%"></div>
+    
+                <div id="show" style="display: block">
+    
+                    <p style="color: blue" id="result"></p>
+    
+                    <p id="identify"></p>
+                    <p style="color: green" id="correct">{{booking.item.serialNumber}}</p>
+    
+                  </div>
+
                 {{ form|crispy }}
                 <input class="btn btn-success btn-block" type="submit" value="Add">
+
+
+                <script>
+                    const html5Qrcode = new Html5Qrcode("reader");
+                    
+                    var startScan = false;
+                    
+              
+                    const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+                      if (decodedText) {
+                        document.getElementById("show").style.display = "block";
+                        document.getElementById("result").textContent = decodedText;
+                        
+                        document.getElementById("serialNumber").value = decodedText;
+                      }
+                    };
+              
+                    function myFunction() {
+                      if (startScan == true) {
+                        html5Qrcode.stop();
+                        startScan = false;
+                        document.getElementById("wtf").textContent = "Start Scanning";
+                      }
+                      if (startScan == false) {
+                        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+                        html5Qrcode.start(
+                          { facingMode: "environment" },
+                          config,
+                          qrCodeSuccessCallback
+                        );
+                        startScan = true;
+                        document.getElementById('wtf').textContent = "Stop Scanning";
+                      }
+                    }
+              
+                  </script>
+
             </form>
+
         </div>
     </div>
 
 
     <div class="col-md-8">
-        <table class="table bg-white">
+        <!-- <form class="input-group form-inline-flex my-2 my-lg-10 ">
+            <input class="form-control mr-sm-2" name="q" type="search" placeholder="Search" aria-label="Search">
+            <button class="input-group-btn btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form> -->
+
+          
+          <!-- <input class="form-control mr-sm-2 mb-2" type="text" id="myInput" onkeyup="myFunction()" placeholder="Search S.N or Item Name" aria-label="Search">
+
+          <script>
+            function myFunction() {
+              // Declare variables
+              var input, filter, table, tr, td, td1, i, txtValue;
+              input = document.getElementById("myInput");
+              filter = input.value.toUpperCase();
+              table = document.getElementById("myTable");
+              tr = table.getElementsByTagName("tr");
+            
+              // Loop through all table rows, and hide those who don't match the search query
+              for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[1];
+                td1 = tr[i].getElementsByTagName("td")[2];
+                if (td || td1) {
+                  txtValue = td.textContent || td.innerText;
+                  txtValue1 = td1.textContent || td1.innerText;
+                  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                  } 
+                  else if (txtValue1.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                  }
+                  else {
+                    tr[i].style.display = "none";
+                    
+                  }
+                }
+              }
+
+            }
+            </script> -->
+
+
+        <table id="myTable" class="table bg-white">
             <thead class="bg-info text-white">
                 <tr>
                     <th scope="col">ID</th>
@@ -35,7 +127,7 @@
                     <th scope="col">Category</th>
                     <th scope="col">Consumable</th>
                     <th scope="col">Quantity</th>
-                    <th scope="col"></th>
+                    <th scope="col">Activity</th>
                 </tr>
             </thead>
             <tbody>
@@ -47,16 +139,28 @@
                     <td>{{ product.category }}</td>
                     <td>{{ product.consumable }}</td>
                     <td>{{ product.quantity }}</td>
-                    <td>
-                        <a class="btn btn-info btn-sm mr-2"
+                    <td style="text-align: center">
+                        <a class="btn btn-info btn-sm  mb-2" style="width:70px"
                             href="{% url 'dashboard-products-edit' product.id %}">Edit</a>
-                        <a class="btn btn-danger btn-sm ml-2"
+                        <a class="btn btn-danger btn-sm " style="width:70px"
                             href="{% url 'dashboard-products-delete' product.id %}">Delete</a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+        <script>
+            let table = new DataTable('#myTable', {
+                // options
+            });
+        </script>
     </div>
 </div>
 {% endblock %}

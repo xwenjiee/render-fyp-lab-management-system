@@ -9,7 +9,58 @@
 
     
     <div class="col-md-8">
-        <table class="table bg-white">
+<!-- 
+        <input class="form-control mr-sm-2 mb-2" type="text" id="myInput" onkeyup="myFunction()" placeholder="Search" aria-label="Search">
+
+        <script>
+          function myFunction() {
+            // Declare variables
+            var input, filter, table, tr, td, td1, td2,td3, td4, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+          
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+              td = tr[i].getElementsByTagName("td")[1];
+              td1 = tr[i].getElementsByTagName("td")[2];
+              td2 = tr[i].getElementsByTagName("td")[3];
+              td3 = tr[i].getElementsByTagName("td")[4];
+              td4 = tr[i].getElementsByTagName("td")[7];
+
+              if (td || td1 || td2 || td3 || td4 ) {
+                txtValue = td.textContent || td.innerText;
+                txtValue1 = td1.textContent || td1.innerText;
+                txtValue2 = td2.textContent || td2.innerText;
+                txtValue3 = td3.textContent || td3.innerText;
+                txtValue4 = td4.textContent || td4.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                  tr[i].style.display = "";
+                } 
+                else if (txtValue1.toUpperCase().indexOf(filter) > -1) {
+                  tr[i].style.display = "";
+                }
+                else if (txtValue2.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                  }
+                else if (txtValue3.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                }
+                else if (txtValue4.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                  }
+                else {
+                  tr[i].style.display = "none";
+                  
+                }
+              }
+            }
+
+          }
+          </script> -->
+
+        <table id="myTable" class="table bg-white">
             <thead class="bg-info text-white">
                 <tr>
                     <th scope="col">ID</th>
@@ -58,19 +109,20 @@
 
                     {% if order.bookingStatus == "Approved" %}
                     <td>
-                        <a class="btn btn-success btn-sm ml-2"
+                        <a class="btn btn-success btn-sm " style="width:70px"
                             href="{% url 'dashboard-order-complete' order.id %}">Complete booking</a>
                     </td>
                     {% elif order.bookingStatus == "Pending Approval" %}
+
                     <td>
-                        <a class="btn btn-danger btn-sm mr-2"
+                        <a class="btn btn-danger btn-sm mb-2" style="width:70px"
                             href="{% url 'dashboard-order-reject' order.id %}">Reject</a>
-                        <a class="btn btn-success btn-sm ml-2"
+                        <a class="btn btn-success btn-sm" style="width:70px"
                             href="{% url 'dashboard-order-approve' order.id %}">Approve</a>
                     </td>
                     {% elif order.bookingStatus == "Completed" %}
                     <td>
-                        <a class="btn btn-danger btn-sm mr-2"
+                        <a class="btn btn-danger btn-sm mr-2" style="width:70px"
                         href="{% url 'dashboard-order-deleteRecord' order.id %}">Delete Record</a>
 
                     </td>
@@ -82,6 +134,18 @@
                 {% endfor %}
             </tbody>
         </table>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+        <script>
+            let table = new DataTable('#myTable', {
+                // options
+            });
+        </script>
     </div>
 </div>
 

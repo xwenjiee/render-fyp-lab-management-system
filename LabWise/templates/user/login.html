@@ -14,6 +14,10 @@
         {% csrf_token %} {{ form|crispy }}
         <input class="btn btn-success" type="submit" value="Login" />
       </form>
+      <div class="alert alert-info mt-3" role="alert">
+        If you are a guest, click <a class="" href="{% url 'guest-view' %}"><u>here</u></a> to view the list of services and item rentals available.
+      </div>
+
     </div>
   </div>
 </div>

@@ -7,6 +7,11 @@ from .models import Profile
 class CreateUserForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
+    def __init__(self, *args, **kwargs):
+        super(CreateUserForm, self).__init__(*args, **kwargs)
+        self.fields["first_name"].required = True
+        self.fields["last_name"].required = True
+
     def clean_email(self):
         email = self.cleaned_data.get("email", "")
         if User.objects.filter(email=email).exists():
@@ -15,7 +20,14 @@ class CreateUserForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2"]
+        fields = [
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "password1",
+            "password2",
+        ]
 
 
 # class UserUpdateForm(PasswordChangeForm):

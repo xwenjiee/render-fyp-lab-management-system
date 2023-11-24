@@ -12,6 +12,10 @@
                             Fill out either the item or service to be booked.
                           </div>
 
+                          <div class="alert alert-info mt-3" role="alert">
+                            Click <a class="" href="{% url 'guest-view' %}"><u>here</u></a> to view the list of services and item rentals available with descriptions.
+                          </div>
+
                         {% csrf_token %}
  
                         {{ form2 |crispy }}
@@ -35,7 +39,7 @@
                     <div class="alert alert-warning " role="alert">
                         Your booking requests rejected by H.O.M.E Lab will be automatically deleted by the system and will not be displayed here.
                       </div>
-                    <table class="table bg-white">
+                    <table class="table bg-white" id="myTable">
                         <thead class="bg-info text-white">
 
                             <tr>
@@ -68,6 +72,19 @@
                             {% endfor %}
                         </tbody>
                     </table>
+
+                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+                    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+              
+                    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+            
+            
+                    <script>
+                        let table = new DataTable('#myTable', {
+                            // options
+                        });
+                    </script>
                 </div>
             </div>
         </div>

@@ -25,38 +25,54 @@
         </div>
     </div>
     <div class="col-md-8">
-        <form class="input-group form-inline-flex my-2 my-lg-10 ">
-            <input class="form-control mr-sm-2" name="q" type="search" placeholder="Search" aria-label="Search">
-            <button class="input-group-btn btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
 
 
-        <table class="table bg-white">
+
+        <table id="myTable" class="table bg-white">
             
             <thead class="bg-info text-white">
                     
                 
                 <tr>
-                    <th scope="col"></th>
+                    <th scope="col">ID</th>
                     <th scope="col">Username</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Phone</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>     
+                    <th scope="col">Date Joined</th>
+                    <th scope="col">Last Login</th>
 
                 </tr>
             </thead>
             <tbody>
                 {% for staff in staff %}
                 <tr>
-                    <th scope="row"><a class="btn btn-info btn-sm"
-                            href="{% url 'dashboard-customer-detail' staff.id %}">View</a></th>
+                    <td>{{ staff.id }}</td>
                     <td>{{ staff.username }}</td>
+                    
                     <td>{{ staff.email }}</td>
-                    <td>{{ staff.profile.phone }}</td>
+                    <td>{{ staff.first_name }}</td>
+                    <td>{{ staff.last_name }}</td>
+                    <td>{{ staff.date_joined }}</td>
+                    <td>{{ staff.last_login }}</td>
 
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+        <script>
+            let table = new DataTable('#myTable', {
+                // options
+            });
+        </script>
     </div>
 </div>
 

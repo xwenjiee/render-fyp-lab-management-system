@@ -32,9 +32,9 @@ urlpatterns = [
     ),
     path("profile/", user_views.profile, name="user-profile"),
     path(
-        "profile/update/",
-        user_views.profile_update,
-        name="user-profile-update",
+        "profile/update_password/",
+        user_views.password_update,
+        name="user-password-update",
     ),
     path(
         "logout/",

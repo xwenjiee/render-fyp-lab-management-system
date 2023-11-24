@@ -3,15 +3,63 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+<script src="https://unpkg.com/html5-qrcode"></script>
 <div class="row my-4">
     <div class="col-md-6 offset-md-3 p-3 bg-white">
         <h3>Edit Item</h3>
         <hr>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
+            <input type="button" class="btn btn-info btn-block mb-2" id="wtf" onclick="myFunction()" value="Scan to input Serial Number">
+            <div id="reader" style="width: 100%"></div>
+
+            <div id="show" style="display: block">
+
+                <p style="color: blue" id="result"></p>
+
+                <p id="identify"></p>
+                <p style="color: green" id="correct">{{booking.item.serialNumber}}</p>
+
+              </div>
             {{ form|crispy }}
             <a class="btn btn-secondary " href="{% url 'dashboard-products' %}">Cancel</a>
             <input class="btn btn-info" type="submit" value="Confirm">
+
+            
+            <script>
+                const html5Qrcode = new Html5Qrcode("reader");
+                
+                var startScan = false;
+                
+          
+                const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+                  if (decodedText) {
+                    document.getElementById("show").style.display = "block";
+                    document.getElementById("result").textContent = decodedText;
+                    
+                    document.getElementById("serialNumber").value = decodedText;
+                  }
+                };
+          
+                function myFunction() {
+                  if (startScan == true) {
+                    html5Qrcode.stop();
+                    startScan = false;
+                    document.getElementById("wtf").textContent = "Start Scanning";
+                  }
+                  if (startScan == false) {
+                    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+                    html5Qrcode.start(
+                      { facingMode: "environment" },
+                      config,
+                      qrCodeSuccessCallback
+                    );
+                    startScan = true;
+                    document.getElementById('wtf').textContent = "Stop Scanning";
+                  }
+                }
+          
+              </script>
         </form>
     </div>
 </div>

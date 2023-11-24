@@ -16,6 +16,7 @@ from .forms import (
     ServiceBookingForm,
     ServiceItemEditForm,
     ProductEditForm,
+    ServiceEditForm,
 )
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -24,6 +25,8 @@ from .decorators import auth_users, allowed_users
 # Create your views here.
 
 
+@login_required(login_url="user-login")
+@allowed_users(allowed_roles=[True])
 def category_edit(request, pk):
     item = Category.objects.get(id=pk)
     if request.method == "POST":
@@ -515,12 +518,12 @@ def service(request):
 def service_edit(request, pk):
     item = Service.objects.get(id=pk)
     if request.method == "POST":
-        form = ServiceForm(request.POST, instance=item)
+        form = ServiceEditForm(request.POST, instance=item)
         if form.is_valid():
             form.save()
             return redirect("dashboard-service")
     else:
-        form = ServiceForm(instance=item)
+        form = ServiceEditForm(instance=item)
     context = {
         "form": form,
     }
@@ -610,3 +613,29 @@ def serviceItem_delete(request, pk):
         return redirect("dashboard-serviceItem")
     context = {"item": item, "serialNumber": item.serialNumber}
     return render(request, "dashboard/serviceItem_delete.html", context)
+
+
+def guest_view(request):
+    service = Service.objects.all()
+    serviceItem = ServiceItem.objects.all()
+    bookings = Booking.objects.filter(bookingStatus="Pending Approval")
+    first = (
+        ServiceItem.objects.all()
+        .filter(status="Available")
+        .distinct("name")
+        .filter(booking__isnull=True)
+    )
+    second = (
+        ServiceItem.objects.all()
+        .filter(status="Available")
+        .distinct("name")
+        .exclude(booking__in=bookings)
+    )
+
+    final = first | second
+    context = {
+        "service": service,
+        "serviceItem": final,
+    }
+
+    return render(request, "guest_view.html", context)

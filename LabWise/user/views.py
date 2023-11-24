@@ -53,7 +53,7 @@ def profile(request):
 
 
 @login_required(login_url="user-login")
-def profile_update(request):
+def password_update(request):
     form = PasswordChangeForm(user=request.user)
 
     if request.method == "POST":
@@ -69,4 +69,4 @@ def profile_update(request):
         # "p_form": p_form,
     }
 
-    return render(request, "user/profile_update.html", context)
+    return render(request, "user/password_update.html", context)

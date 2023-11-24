@@ -7,27 +7,47 @@
 <div class="row my-4">
     <div class="col-md-4"></div>
     <div class="col-md-8">
-        <table class="table bg-white">
+        <table id="myTable" class="table bg-white">
             <thead class="bg-info text-white">
                 <tr>
-                    <th scope="col"></th>
-                    <th scope="col">First</th>
-                    <th scope="col">Phone</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Username</th>
                     <th scope="col">Email</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>     
+                    <th scope="col">Date Joined</th>
+                    <th scope="col">Last Login</th>
                 </tr>
             </thead>
             <tbody>
                 {% for customer in customer %}
                 <tr>
-                    <th scope="row"><a class="btn btn-info btn-sm"
-                            href="{% url 'dashboard-customer-detail' customer.id %}">View</a></th>
+                    <!-- <th scope="row"><a class="btn btn-info btn-sm"
+                            href="{% url 'dashboard-customer-detail' customer.id %}">View</a></th> -->
+                            <td>{{ customer.id }}</td>
                     <td>{{ customer.username }}</td>
-                    <td>{{ customer.profile.phone }}</td>
+                    
                     <td>{{ customer.email }}</td>
+                    <td>{{ customer.first_name }}</td>
+                    <td>{{ customer.last_name }}</td>
+                    <td>{{ customer.date_joined }}</td>
+                    <td>{{ customer.last_login }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+        <script>
+            let table = new DataTable('#myTable', {
+                // options
+            });
+        </script>
     </div>
 </div>
 

@@ -76,4 +76,9 @@ urlpatterns = [
         views.service_edit,
         name="dashboard-service-edit",
     ),
+    path(
+        "catalogue/",
+        views.guest_view,
+        name="guest-view",
+    ),
 ]
