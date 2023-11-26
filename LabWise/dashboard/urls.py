@@ -3,18 +3,18 @@ from . import views
 
 urlpatterns = [
     path("index/", views.index, name="dashboard-index"),
-    path("products/", views.products, name="dashboard-products"),
+    path("items/", views.products, name="dashboard-products"),
     path(
-        "products/delete/<int:pk>/",
+        "items/delete/<int:pk>/",
         views.product_delete,
         name="dashboard-products-delete",
     ),
     path(
-        "products/detail/<int:pk>/",
+        "items/detail/<int:pk>/",
         views.product_detail,
         name="dashboard-products-detail",
     ),
-    path("products/edit/<int:pk>/", views.product_edit, name="dashboard-products-edit"),
+    path("items/edit/<int:pk>/", views.product_edit, name="dashboard-products-edit"),
     path("categories/", views.categories, name="dashboard-categories"),
     path(
         "categories/delete/<int:pk>/",

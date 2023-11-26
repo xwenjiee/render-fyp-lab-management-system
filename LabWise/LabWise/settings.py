@@ -9,12 +9,16 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -23,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-l7pcuehg)0)ozfaxfyesn*r^*q)by-7b8ugb)gopv98l0(y1=y"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -77,6 +81,7 @@ WSGI_APPLICATION = "LabWise.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -86,6 +91,18 @@ DATABASES = {
         "HOST": "localhost",
     }
 }
+
+
+# RENDER POSTGRES DB
+import dj_database_url
+
+
+DATABASES = {"default": dj_database_url.parse(env("DATABASE_URL"))}
+
+
+# DATABASES["default"] = dj_database_url.parse(
+#     "postgres://admin:gmIF54PknSEmxSsBJ5T1Fa3F13Gv2Qzi@dpg-clg0uruf27hc739fuklg-a.singapore-postgres.render.com/labwisedb_hy45"
+# )
 
 
 # Password validation
