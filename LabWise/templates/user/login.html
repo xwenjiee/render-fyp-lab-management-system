@@ -13,8 +13,14 @@
       <form method="POST">
         {% csrf_token %} {{ form|crispy }}
         <input class="btn btn-success" type="submit" value="Login" />
+        <div class="alert alert-warning mt-4">
+
+          Are you a new customer? Click <a class="" href="{% url 'user-register' %}"><u>here</u></a> to register.
+        </div>
+        
+       
       </form>
-      <div class="alert alert-info mt-3" role="alert">
+      <div class="alert alert-info mt-2" role="alert">
         If you are a guest, click <a class="" href="{% url 'guest-view' %}"><u>here</u></a> to view the list of services and item rentals available.
       </div>
 
