@@ -66,8 +66,8 @@ class Booking(models.Model):
     service = models.ForeignKey(
         Service, on_delete=models.CASCADE, null=True, default=None
     )
-    startDateTime = models.DateTimeField(null=True)
-    endDateTime = models.DateTimeField(null=True)
+    startDateTime = models.DateTimeField("Starting Date and Time", null=True)
+    endDateTime = models.DateTimeField("Ending Date and Time", null=True)
     bookingStatus = models.CharField(default="Pending Approval", null=False)
     # order_quantity = models.PositiveIntegerField(null=True)
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True)

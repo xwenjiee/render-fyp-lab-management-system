@@ -10,7 +10,8 @@
         <hr>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="button" class="btn btn-info btn-block mb-2" id="wtf" onclick="myFunction()" value="Scan to input Serial Number">
+            <div type="button" class="btn btn-info btn-block mb-2" id="wtf" onclick="myFunction()" value="">Scan to input Serial Number <i class="bi bi-qr-code-scan"></i></div>
+
             <div id="reader" style="width: 100%"></div>
 
             <div id="show" style="display: block">

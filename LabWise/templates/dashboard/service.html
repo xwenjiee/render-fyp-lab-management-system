@@ -63,7 +63,7 @@
                     <th scope="col">ID</th>
                     <th scope="col">Name</th>
                     <th scope="col">Description</th>
-                    <th scope="col">Activity</th>
+                    <th style="text-align:center"scope="col">Activity</th>
 
                 </tr>
             </thead>
@@ -75,10 +75,10 @@
                     <td>{{ service.desc }}</td>
                     
 
-                    <td>
-                        <a class="btn btn-info btn-sm mr-2"
+                    <td style="text-align:center">
+                        <a class="btn btn-info btn-sm mb-1"  style="width:70px"
                             href="{% url 'dashboard-service-edit' service.id %}">Edit</a>
-                        <a class="btn btn-danger btn-sm ml-2"
+                        <a class="btn btn-danger btn-sm"  style="width:70px"
                             href="{% url 'dashboard-service-delete' service.id %}">Delete</a>
                     </td>
                 </tr>

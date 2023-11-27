@@ -19,7 +19,8 @@
             <hr>
             <form method="POST">
                 {% csrf_token %}
-                <input type="button"class="btn btn-info btn-block mb-2" id="wtf" onclick="myFunction()" value="Scan to input Serial Number">
+                <div type="button" class="btn btn-info btn-block mb-2" id="wtf" onclick="myFunction()" value="">Scan to input Serial Number <i class="bi bi-qr-code-scan"></i></div>
+
                 <div id="reader" style="width: 100%"></div>
     
                 <div id="show" style="display: block">
@@ -127,7 +128,7 @@
                     <th scope="col">Category</th>
                     <th scope="col">Consumable</th>
                     <th scope="col">Quantity</th>
-                    <th scope="col">Activity</th>
+                    <th style="text-align:center"scope="col">Activity</th>
                 </tr>
             </thead>
             <tbody>
@@ -140,7 +141,7 @@
                     <td>{{ product.consumable }}</td>
                     <td>{{ product.quantity }}</td>
                     <td style="text-align: center">
-                        <a class="btn btn-info btn-sm  mb-2" style="width:70px"
+                        <a class="btn btn-info btn-sm  mb-1" style="width:70px"
                             href="{% url 'dashboard-products-edit' product.id %}">Edit</a>
                         <a class="btn btn-danger btn-sm " style="width:70px"
                             href="{% url 'dashboard-products-delete' product.id %}">Delete</a>

@@ -11,6 +11,8 @@ from .forms import CreateUserForm
 
 
 def register(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect("/logout/")
     if request.method == "POST":
         form = CreateUserForm(request.POST)
         if form.is_valid():
