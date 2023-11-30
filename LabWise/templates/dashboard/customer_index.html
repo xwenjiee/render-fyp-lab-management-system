@@ -16,11 +16,11 @@
                 <div class="card-body">
                     <form method="POST">
                         <div class="alert  alert-primary " role="alert">
-                            Fill out either the item or service to be booked.
+                            Fill out <b>one</b> item or <b>one</b> service to be booked.
                           </div>
 
                           <div class="alert alert-info mt-3" role="alert">
-                            Click <a class="" href="{% url 'guest-view' %}"><u>here</u></a> to view the list of services and item rentals available with descriptions.
+                            Click <a class="" href="{% url 'guest-view' %}"><b><u>here</u></b></a> to view the list of services and item rentals available with descriptions.
                           </div>
 
                         {% csrf_token %}
