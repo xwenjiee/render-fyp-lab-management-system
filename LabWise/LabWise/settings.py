@@ -97,15 +97,15 @@ DATABASES = {
 
 
 # RENDER POSTGRES DB
-# import dj_database_url
+import dj_database_url
 
 
-# DATABASES = {"default": dj_database_url.parse(env("DATABASE_URL"))}
+DATABASES = {"default": dj_database_url.parse(env("DATABASE_URL"))}
 
 
-# DATABASES["default"] = dj_database_url.parse(
-#     "postgres://admin:gmIF54PknSEmxSsBJ5T1Fa3F13Gv2Qzi@dpg-clg0uruf27hc739fuklg-a.singapore-postgres.render.com/labwisedb_hy45"
-# )
+DATABASES["default"] = dj_database_url.parse(
+    "postgres://admin:gmIF54PknSEmxSsBJ5T1Fa3F13Gv2Qzi@dpg-clg0uruf27hc739fuklg-a.singapore-postgres.render.com/labwisedb_hy45"
+)
 
 
 # Password validation
