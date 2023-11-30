@@ -15,7 +15,7 @@
                 </div>
                 {% if booking.item %}
                 <div class="alert alert-info"
-                >Scan the item of booking to be returned.</div
+                >Scan the item to be returned.</div
               >
                 <div class="alert alert-warning"
                 >Please reload the page if accidentally denied camera access.</div
@@ -42,9 +42,9 @@
                 <div style="display:flex">
                     <a class="btn btn-secondary btn-sm" href="{% url 'dashboard-order' %}">Cancel</a>
                     {% if booking.service %}
-                    <input class="btn btn-success btn-sm ml-1" type="submit" value="Complete Booking">
+                    <input class="btn btn-success" type="submit" value="Complete Booking">
                     {% elif booking.item %}
-                    <input class="btn btn-success btn-sm ml-1" type="submit" id="complete" value="Complete Booking">
+                    <input class="btn btn-success" type="submit" id="complete" value="Complete Booking">
                     {% endif %}
                 </div>
 

@@ -17,29 +17,13 @@ from .forms import (
     ServiceItemEditForm,
     ProductEditForm,
     ServiceEditForm,
+    CategoryEditForm,
 )
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .decorators import auth_users, allowed_users
 
 # Create your views here.
-
-
-@login_required(login_url="user-login")
-@allowed_users(allowed_roles=[True])
-def category_edit(request, pk):
-    item = Category.objects.get(id=pk)
-    if request.method == "POST":
-        form = CategoryForm(request.POST, instance=item)
-        if form.is_valid():
-            form.save()
-            return redirect("dashboard-categories")
-    else:
-        form = CategoryForm(instance=item)
-    context = {
-        "form": form,
-    }
-    return render(request, "dashboard/categories_edit.html", context)
 
 
 @login_required(login_url="user-login")
@@ -59,11 +43,7 @@ def index(request):
     serviceItem = ServiceItem.objects.all()
     serviceItem_count = serviceItem.count()
 
-    # categoriesChart = product.distinct('category')
-    # categoriesChart2 = product.distinct('category')
-
     if request.method == "POST":
-        # form1 = ServiceItemBookingForm(request.POST)
         form2 = ServiceBookingForm(request.POST)
 
         if form2.is_valid():
@@ -72,17 +52,10 @@ def index(request):
 
             obj.save()
             return redirect("dashboard-index")
-        # if form2.is_valid():
-        #     obj = form2.save(commit=False)
-        #     obj.customer = request.user
-        #     obj.save()
-        #     return redirect("dashboard-index")
+
     else:
-        # form1 = ServiceItemBookingForm()
         form2 = ServiceBookingForm()
     context = {
-        # "form1": form1,
-        # "categoriesChart": categoriesChart,
         "form2": form2,
         "order": order,
         "staff": staff,
@@ -197,12 +170,12 @@ def categories(request):
 def category_edit(request, pk):
     item = Category.objects.get(id=pk)
     if request.method == "POST":
-        form = CategoryForm(request.POST, instance=item)
+        form = CategoryEditForm(request.POST, instance=item)
         if form.is_valid():
             form.save()
             return redirect("dashboard-categories")
     else:
-        form = CategoryForm(instance=item)
+        form = CategoryEditForm(instance=item)
     context = {
         "form": form,
     }

@@ -31,8 +31,6 @@ class Item(models.Model):
         Category, on_delete=models.CASCADE, null=True, default=None
     )
 
-    # category = models.CharField(Category, on_delete=models.CASCADE, null=True)
-
     def __str__(self):
         return f"{self.name}"
 
@@ -56,10 +54,6 @@ class Service(models.Model):
 
 
 class Booking(models.Model):
-    # item = models.CharField(max_length=500, null=True, default=None)
-    # item_assign = models.ForeignKey(
-    #     ServiceItem, on_delete=models.CASCADE, null=True, default=None
-    # )
     item = models.ForeignKey(
         ServiceItem, on_delete=models.CASCADE, null=True, default=None
     )
@@ -74,12 +68,3 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.customer}-{self.name}"
-
-
-# class Product(models.Model):
-#     name = models.CharField(max_length=100, null=True)
-#     quantity = models.PositiveIntegerField(null=True)
-#     category = models.CharField(max_length=50, choices=CATEGORY, null=True)
-
-#     def __str__(self):
-#         return f"{self.name}"

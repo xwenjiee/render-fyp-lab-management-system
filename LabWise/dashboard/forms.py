@@ -25,6 +25,75 @@ class CategoryForm(forms.ModelForm):
         fields = "__all__"
 
 
+class CategoryEditForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CategoryEditForm, self).__init__(*args, **kwargs)
+        self.fields["desc"].required = False
+
+    name = forms.CharField()
+
+    def clean_name(self):
+        cleaned_data = super().clean()
+        name = self.cleaned_data.get("name", "")
+        if (
+            Category.objects.exclude(pk=self.instance.pk)
+            .filter(name=cleaned_data.get("name"))
+            .exists()
+        ):
+            raise forms.ValidationError(
+                (f"Category with name '{name}' already exists."),
+                params={"name": name},
+            )
+        return name
+
+    class Meta:
+        model = Category
+        fields = "__all__"
+
+
+class ServiceItemEditForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ServiceItemEditForm, self).__init__(*args, **kwargs)
+        self.fields["desc"].required = False
+        self.fields["serialNumber"].widget.attrs["id"] = "serialNumber"
+
+    # serialNumber = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        serialNumber = self.cleaned_data.get("serialNumber", "")
+        if (
+            ServiceItem.objects.exclude(pk=self.instance.pk)
+            .filter(serialNumber=cleaned_data.get("serialNumber"))
+            .exists()
+            and serialNumber != None
+        ):
+            raise forms.ValidationError(
+                (f"Service Item with serial number '{serialNumber}' already exists."),
+                params={"serialNumber": serialNumber},
+            )
+        if (
+            Item.objects.filter(serialNumber=cleaned_data.get("serialNumber")).exists()
+            and serialNumber != None
+        ):
+            raise forms.ValidationError(
+                (
+                    f"Service Item with {serialNumber} already exists as an Inventory Item."
+                ),
+                params={"serialNumber": serialNumber},
+            )
+
+        return cleaned_data
+
+    class Meta:
+        model = ServiceItem
+        fields = [
+            "serialNumber",
+            "name",
+            "desc",
+        ]
+
+
 class ProductForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
@@ -56,22 +125,6 @@ class ProductForm(forms.ModelForm):
             )
         return serialNumber
 
-    # def clean_quantity(self):
-    #     quantity = self.cleaned_data.get("quantity", "")
-    #     serialNumber = self.cleaned_data.get("serialNumber", "")
-    #     if serialNumber != "" and quantity == 0:
-    #         raise forms.ValidationError(
-    #             (f"Items with serial numbers cannot have quantity of 0."),
-    #             params={"serialNumber": serialNumber},
-    #         )
-    #     return serialNumber, quantity
-
-    # def exempt_zero(value):
-    #     if value == 0:
-    #         raise ValidationError(
-    #             ("Please enter a value greater than 0"),
-    #             params={"value": value},
-    #         )
     class Meta:
         model = Item
         fields = ["serialNumber", "name", "consumable", "quantity", "category"]
@@ -155,7 +208,9 @@ class ServiceItemForm(forms.ModelForm):
             )
         if Item.objects.filter(serialNumber__iexact=serialNumber).exists():
             raise forms.ValidationError(
-                (f"Item with {serialNumber} already exists as an Inventory Item."),
+                (
+                    f"Service Item with {serialNumber} already exists as an Inventory Item."
+                ),
                 params={"serialNumber": serialNumber},
             )
         return serialNumber
@@ -187,7 +242,7 @@ class ServiceItemEditForm(forms.ModelForm):
             and serialNumber != None
         ):
             raise forms.ValidationError(
-                (f"Item with serial number '{serialNumber}' already exists."),
+                (f"Service Item with serial number '{serialNumber}' already exists."),
                 params={"serialNumber": serialNumber},
             )
         if (
@@ -195,7 +250,9 @@ class ServiceItemEditForm(forms.ModelForm):
             and serialNumber != None
         ):
             raise forms.ValidationError(
-                (f"Item with {serialNumber} already exists as an Inventory Item."),
+                (
+                    f"Service Item with {serialNumber} already exists as an Inventory Item."
+                ),
                 params={"serialNumber": serialNumber},
             )
 
@@ -259,21 +316,11 @@ class ServiceEditForm(forms.ModelForm):
 
 
 class ServiceBookingForm(forms.ModelForm):
-    # # item = forms.ChoiceField(required=False, choices=[])
-    # startDateTime = forms.DateTimeField(input_formats=["%d/%m/%Y %H:%M"])
-
     def __init__(self, *args, **kwargs):
         super(ServiceBookingForm, self).__init__(*args, **kwargs)
         self.fields["service"].required = False
         self.fields["item"].required = False
-        # super().get_form_class().base_fields["item"].limit_choices_to = {
-        #     "item": ServiceItem.objects.all().values_list("name").distinct()
-        # }
 
-        #         serviceItem = ServiceItem.objects.all()
-        # methods = project_main.methods_set.all() # All the Methods related to the instance
-        # things = project_main.things_set.all() # All the Methods related to the instance
-        # more_stuffs = project_main.morestuff_set.all() # All the Methods related to the instance
         bookings = Booking.objects.filter(bookingStatus="Pending Approval")
         first = (
             ServiceItem.objects.all()
@@ -293,23 +340,6 @@ class ServiceBookingForm(forms.ModelForm):
 
         # CONDITION:
         #   no one else requesting, or somebody has requested but it is already returned. NOT IN ANY BOOKINGS YET, but its ok if its in bookings that are "Completed"
-
-        # self.fields["item"].choices = [
-        #     (yr, yr)
-        #     for yr in ServiceItem.objects.values_list(
-        #         "name",
-        #         flat=True,
-        #     ).distinct()
-        # ] + [("", "---Please select your color---")]
-
-        # self.fields["item"].queryset = (
-        #     ServiceItem.objects.all().values_list("name").distinct()
-        # )
-
-    # item = forms.ModelChoiceField(
-    #     queryset=ServiceItem.objects.all().values_list("name", "name").distinct(),
-    #     required=False,
-    # )
 
     class Meta:
         model = Booking
@@ -349,6 +379,32 @@ class ServiceBookingForm(forms.ModelForm):
             raise forms.ValidationError("You cannot make a booking from the past!")
 
         return cleaned_data
+
+
+class StaffForm(UserCreationForm):
+    email = forms.EmailField()
+
+    def __init__(self, *args, **kwargs):
+        super(StaffForm, self).__init__(*args, **kwargs)
+        self.fields["first_name"].required = True
+        self.fields["last_name"].required = True
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email", "")
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError((f"{email} is taken."), params={"email": email})
+        return email
+
+    class Meta:
+        model = User
+        fields = [
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "password1",
+            "password2",
+        ]
 
 
 # manual assign
@@ -427,29 +483,3 @@ class ServiceBookingForm(forms.ModelForm):
 #             "startDate": forms.TextInput(attrs={"type": "date"}),
 #             "endDate": forms.TextInput(attrs={"type": "date"}),
 #         }
-
-
-class StaffForm(UserCreationForm):
-    email = forms.EmailField()
-
-    def __init__(self, *args, **kwargs):
-        super(StaffForm, self).__init__(*args, **kwargs)
-        self.fields["first_name"].required = True
-        self.fields["last_name"].required = True
-
-    def clean_email(self):
-        email = self.cleaned_data.get("email", "")
-        if User.objects.filter(email=email).exists():
-            raise forms.ValidationError((f"{email} is taken."), params={"email": email})
-        return email
-
-    class Meta:
-        model = User
-        fields = [
-            "first_name",
-            "last_name",
-            "username",
-            "email",
-            "password1",
-            "password2",
-        ]

@@ -10,7 +10,8 @@
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form|crispy }}
-            <input class="btn btn-info" type="submit" value="Confirm">
+            <a class="btn btn-secondary " href="{% url 'dashboard-categories' %}">Cancel</a>
+            <input class="btn btn-info " type="submit" value="Confirm">
         </form>
     </div>
 </div>
