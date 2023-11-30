@@ -416,7 +416,7 @@ def order_approve(request, pk):
             booking.item.status = "Occupied"
             booking.item.save()
 
-        booking.bookingStatus = "Approved"
+        booking.bookingStatus = "Active"
         booking.save()
         return redirect("dashboard-order")
     context = {"item": booking}
