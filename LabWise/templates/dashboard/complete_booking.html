@@ -40,11 +40,11 @@
 
                 {% endif %}
                 <div style="display:flex">
-                    <a class="btn btn-secondary btn-sm" href="{% url 'dashboard-order' %}">Cancel</a>
+                    <a class="btn btn-secondary" href="{% url 'dashboard-order' %}">Cancel</a>
                     {% if booking.service %}
-                    <input class="btn btn-success" type="submit" value="Complete Booking">
+                    <input class="btn btn-success ml-1" type="submit" value="Complete Booking">
                     {% elif booking.item %}
-                    <input class="btn btn-success" type="submit" id="complete" value="Complete Booking">
+                    <input class="btn btn-success ml-1" type="submit" id="complete" value="Complete Booking">
                     {% endif %}
                 </div>
 
