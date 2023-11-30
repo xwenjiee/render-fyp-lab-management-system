@@ -48,7 +48,7 @@
                     <td>{{ order.startDateTime }}</td>
                     <td>{{ order.endDateTime }}</td>
 
-                    {% if order.bookingStatus == "Approved" %}
+                    {% if order.bookingStatus == "Active" %}
                     <td  class="alert alert-success">{{ order.bookingStatus }}</td>
                     {% elif order.bookingStatus == "Pending Approval" %}
                     <td  class="alert alert-warning">{{ order.bookingStatus }}</td>
@@ -58,7 +58,7 @@
                     {% endif %}
                     
 
-                    {% if order.bookingStatus == "Approved" %}
+                    {% if order.bookingStatus == "Active" %}
                     <td style=" text-align:center">
                         <a class="btn btn-success btn-sm " style="width:80px"
                             href="{% url 'dashboard-order-complete' order.id %}">Complete booking</a>

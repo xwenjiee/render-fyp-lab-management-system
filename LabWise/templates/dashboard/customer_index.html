@@ -67,7 +67,7 @@
                                 <td>{{ order.service }}</td>
                                 <td>{{ order.startDateTime }}</td>
                                 <td>{{ order.endDateTime }}</td>
-                                {% if order.bookingStatus == "Approved" %}
+                                {% if order.bookingStatus == "Active" %}
                                 <td  class="alert alert-success">{{ order.bookingStatus }}</td>
                                 {% elif order.bookingStatus == "Pending Approval" %}
                                 <td  class="alert alert-warning">{{ order.bookingStatus }}</td>
