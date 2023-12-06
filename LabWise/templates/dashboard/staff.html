@@ -5,7 +5,7 @@
 
 {% block content %}
 {% include 'partials/topside.html' %}
-<div class="row my-4">
+<div class="row my-4" >
     <div class="col-md-4">
         {% if messages %}
         {% for message in messages %}
@@ -24,7 +24,7 @@
             </form>
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-8" style=" display:auto;overflow:auto">
 
 
 
@@ -41,6 +41,9 @@
                     <th scope="col">Last Name</th>     
                     <th scope="col">Date Joined</th>
                     <th scope="col">Last Login</th>
+                    {% if user.is_superuser %}
+                    <th scope="col">Activity</th>
+                    {% endif %}
 
                 </tr>
             </thead>
@@ -55,6 +58,15 @@
                     <td>{{ staff.last_name }}</td>
                     <td>{{ staff.date_joined }}</td>
                     <td>{{ staff.last_login }}</td>
+                    {% if user.is_superuser %}
+                    <td> 
+                    {% if user != staff %}
+                                       <a class="btn btn-danger btn-sm"  style="width:70px"
+                        href="{% url 'dashboard-account-delete' staff.id %}">Delete</a>
+
+                    {% endif %}
+                </td>
+                {% endif %}
 
                 </tr>
                 {% endfor %}

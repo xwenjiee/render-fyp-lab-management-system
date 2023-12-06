@@ -21,7 +21,9 @@ from .forms import (
 )
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .decorators import auth_users, allowed_users
+from .decorators import auth_users, allowed_users, superuseronly
+
+from django.db.models.query import QuerySet
 
 # Create your views here.
 
@@ -30,10 +32,10 @@ from .decorators import auth_users, allowed_users
 def index(request):
     staff = User.objects.filter(is_staff=True)
     staff_count = staff.count()
-    product = Item.objects.all()
-    product_count = product.count()
-    order = Booking.objects.all()
-    order_count = order.count()
+    item = Item.objects.all()
+    item_count = item.count()
+    booking = Booking.objects.all()
+    booking_count = booking.count()
     customer = User.objects.filter(is_staff=False)
     customer_count = customer.count()
     category = Category.objects.all()
@@ -47,22 +49,76 @@ def index(request):
         form2 = ServiceBookingForm(request.POST)
 
         if form2.is_valid():
-            obj = form2.save()
-            obj.customer = request.user
 
-            obj.save()
+            def extract_integer_from_queryset(queryset):
+                if not isinstance(queryset, QuerySet):
+                    raise ValueError("Input must be a Django QuerySet")
+
+                # Check if the QuerySet has any items
+                if queryset.exists():
+                    # Assuming 'id' is the key you want to extract
+                    first_item = queryset.first()
+                    extracted_id = first_item.get(
+                        "id"
+                    )  # Change 'id' to the actual key in your data
+                    if extracted_id is not None:
+                        return int(extracted_id)
+                    else:
+                        raise ValueError("Key 'id' not found in the queryset item")
+                else:
+                    raise ValueError("QuerySet is empty")
+
+            # Example usage:
+            identity = User.objects.filter(username=request.user).values("id")
+            result_integer = extract_integer_from_queryset(identity)
+
+            print(result_integer)
+
+            count = (
+                Booking.objects.all()
+                .filter(customer_id=result_integer)
+                .filter(service=form2.cleaned_data.get("service"))
+                .filter(bookingStatus="Active")
+                .count()
+            ) + (
+                Booking.objects.all()
+                .filter(customer_id=result_integer)
+                .filter(service=form2.cleaned_data.get("service"))
+                .filter(bookingStatus="Pending Approval")
+                .count()
+            )
+            print(count)
+
+            if count < 3:
+                obj = form2.save()
+                obj.customer = request.user
+                obj.save()
+                service = form2.cleaned_data.get("service")
+                item = form2.cleaned_data.get("item")
+                if service:
+                    messages.success(request, f"{service} has been requested.")
+
+                elif item:
+                    messages.success(request, f"{item} has been requested.")
+
+            else:
+                service = form2.cleaned_data.get("service")
+                messages.error(
+                    request, f"{service} is requested/active for more than 3 slots."
+                )
+
             return redirect("dashboard-index")
 
     else:
         form2 = ServiceBookingForm()
     context = {
         "form2": form2,
-        "order": order,
+        "booking": booking,
         "staff": staff,
         "staff_count": staff_count,
-        "product": product,
-        "product_count": product_count,
-        "order_count": order_count,
+        "item": item,
+        "item_count": item_count,
+        "booking_count": booking_count,
         "customer_count": customer_count,
         "category": category,
         "category_count": category_count,
@@ -76,15 +132,15 @@ def index(request):
 
 @login_required(login_url="user-login")
 @allowed_users(allowed_roles=[True])
-def products(request):
+def items(request):
     staff = User.objects.filter(is_staff=True)
     staff_count = staff.count()
-    product = Item.objects.all()
-    product_count = product.count()
+    item = Item.objects.all()
+    item_count = item.count()
     customer = User.objects.filter(is_staff=False)
     customer_count = customer.count()
-    order = Booking.objects.all()
-    order_count = order.count()
+    booking = Booking.objects.all()
+    booking_count = booking.count()
     category = Category.objects.all()
     category_count = category.count()
     service = Service.objects.all()
@@ -98,17 +154,17 @@ def products(request):
             form.save()
             product_name = form.cleaned_data.get("name")
             messages.success(request, f"{product_name} has been added")
-            return redirect("dashboard-products")
+            return redirect("dashboard-items")
     else:
         form = ProductForm()
     context = {
-        "product": product,
+        "item": item,
         "form": form,
         "staff": staff,
         "staff_count": staff_count,
         "customer_count": customer_count,
-        "product_count": product_count,
-        "order_count": order_count,
+        "item_count": item_count,
+        "booking_count": booking_count,
         "category": category,
         "category_count": category_count,
         "service": service,
@@ -116,7 +172,7 @@ def products(request):
         "serviceItem": serviceItem,
         "serviceItem_count": serviceItem_count,
     }
-    return render(request, "dashboard/products.html", context)
+    return render(request, "dashboard/item.html", context)
 
 
 # CATEGORY
@@ -125,12 +181,12 @@ def products(request):
 def categories(request):
     staff = User.objects.filter(is_staff=True)
     staff_count = staff.count()
-    product = Item.objects.all()
-    product_count = product.count()
+    item = Item.objects.all()
+    item_count = item.count()
     customer = User.objects.filter(is_staff=False)
     customer_count = customer.count()
-    order = Booking.objects.all()
-    order_count = order.count()
+    booking = Booking.objects.all()
+    booking_count = booking.count()
     category = Category.objects.all()
     category_count = category.count()
     service = Service.objects.all()
@@ -148,13 +204,13 @@ def categories(request):
     else:
         form = CategoryForm()
     context = {
-        "product": product,
+        "item": item,
         "form": form,
         "staff": staff,
         "staff_count": staff_count,
         "customer_count": customer_count,
-        "product_count": product_count,
-        "order_count": order_count,
+        "item_count": item_count,
+        "booking_count": booking_count,
         "category": category,
         "category_count": category_count,
         "service": service,
@@ -194,22 +250,16 @@ def category_delete(request, pk):
 
 
 @login_required(login_url="user-login")
-def product_detail(request, pk):
-    context = {}
-    return render(request, "dashboard/products_detail.html", context)
-
-
-@login_required(login_url="user-login")
 @allowed_users(allowed_roles=[True])
 def customers(request):
     staff = User.objects.filter(is_staff=True)
     staff_count = staff.count()
     customer = User.objects.filter(is_staff=False)
     customer_count = customer.count()
-    product = Item.objects.all()
-    product_count = product.count()
-    order = Booking.objects.all()
-    order_count = order.count()
+    item = Item.objects.all()
+    item_count = item.count()
+    booking = Booking.objects.all()
+    booking_count = booking.count()
     category = Category.objects.all()
     category_count = category.count()
     service = Service.objects.all()
@@ -221,8 +271,8 @@ def customers(request):
         "staff_count": staff_count,
         "customer": customer,
         "customer_count": customer_count,
-        "product_count": product_count,
-        "order_count": order_count,
+        "item_count": item_count,
+        "booking_count": booking_count,
         "category": category,
         "category_count": category_count,
         "service": service,
@@ -241,10 +291,10 @@ def staff(request):
     staff_count = staff.count()
     customer = User.objects.filter(is_staff=False)
     customer_count = customer.count()
-    product = Item.objects.all()
-    product_count = product.count()
-    order = Booking.objects.all()
-    order_count = order.count()
+    item = Item.objects.all()
+    item_count = item.count()
+    booking = Booking.objects.all()
+    booking_count = booking.count()
     category = Category.objects.all()
     category_count = category.count()
     service = Service.objects.all()
@@ -273,8 +323,8 @@ def staff(request):
         "staff_count": staff_count,
         "customer": customer,
         "customer_count": customer_count,
-        "product_count": product_count,
-        "order_count": order_count,
+        "item_count": item_count,
+        "booking_count": booking_count,
         "category": category,
         "category_count": category_count,
         "service": service,
@@ -286,79 +336,73 @@ def staff(request):
 
 
 @login_required(login_url="user-login")
+# @allowed_users(allowed_roles=["Admin"])
+
+
 @allowed_users(allowed_roles=[True])
-def customer_detail(request, pk):
-    staff = User.objects.filter(is_staff=True)
-    staff_count = staff.count()
-    customer = User.objects.filter(is_staff=False)
-    customer_count = customer.count()
-    product = Item.objects.all()
-    product_count = product.count()
-    order = Booking.objects.all()
-    order_count = order.count()
-    customers = User.objects.get(id=pk)
-    category = Category.objects.all()
-    category_count = category.count()
-    service = Service.objects.all()
-    service_count = service.count()
-    serviceItem = ServiceItem.objects.all()
-    serviceItem_count = serviceItem.count()
-    context = {
-        "staff": staff,
-        "staff_count": staff_count,
-        "customers": customers,
-        "customer_count": customer_count,
-        "product_count": product_count,
-        "order_count": order_count,
-        "category": category,
-        "category_count": category_count,
-        "service": service,
-        "service_count": service_count,
-        "serviceItem": serviceItem,
-        "serviceItem_count": serviceItem_count,
-    }
-    return render(request, "dashboard/customers_detail.html", context)
+@superuseronly(allowed_roles=[True])
+def account_deleteStaff(request, pk):
+    item = User.objects.get(id=pk)
+
+    if request.method == "POST":
+        item.delete()
+        return redirect("dashboard-staff")
+
+    context = {"item": item}
+    return render(request, "dashboard/account_delete.html", context)
+
+
+@allowed_users(allowed_roles=[True])
+def account_delete(request, pk):
+    item = User.objects.get(id=pk)
+
+    if request.method == "POST":
+        item.delete()
+        return redirect("dashboard-customers")
+
+    context = {"item": item}
+    return render(request, "dashboard/account_delete.html", context)
 
 
 @login_required(login_url="user-login")
 @allowed_users(allowed_roles=[True])
-def product_edit(request, pk):
+def item_edit(request, pk):
     item = Item.objects.get(id=pk)
     if request.method == "POST":
         form = ProductEditForm(request.POST, instance=item)
         if form.is_valid():
             form.save()
-            return redirect("dashboard-products")
+            return redirect("dashboard-items")
     else:
         form = ProductEditForm(instance=item)
     context = {
         "form": form,
     }
-    return render(request, "dashboard/products_edit.html", context)
+    return render(request, "dashboard/item_edit.html", context)
 
 
 @login_required(login_url="user-login")
 @allowed_users(allowed_roles=[True])
-def product_delete(request, pk):
+def item_delete(request, pk):
     item = Item.objects.get(id=pk)
     if request.method == "POST":
         item.delete()
-        return redirect("dashboard-products")
+        return redirect("dashboard-items")
     context = {"item": item}
-    return render(request, "dashboard/products_delete.html", context)
+    return render(request, "dashboard/item_delete.html", context)
 
 
 @login_required(login_url="user-login")
 @allowed_users(allowed_roles=[True])
-def order(request):
+def booking(request):
     staff = User.objects.filter(is_staff=True)
     staff_count = staff.count()
-    order = Booking.objects.all()
-    order_count = order.count()
+    booking = Booking.objects.all()
+    booking_count = booking.count()
     customer = User.objects.filter(is_staff=False)
     customer_count = customer.count()
-    product = Item.objects.all()
-    product_count = product.count()
+    item = Item.objects.all()
+    item_count = item.count()
 
     category = Category.objects.all()
     category_count = category.count()
@@ -370,10 +414,10 @@ def order(request):
     context = {
         "staff": staff,
         "staff_count": staff_count,
-        "order": order,
+        "booking": booking,
         "customer_count": customer_count,
-        "product_count": product_count,
-        "order_count": order_count,
+        "item_count": item_count,
+        "booking_count": booking_count,
         "category": category,
         "category_count": category_count,
         "service": service,
@@ -381,34 +425,34 @@ def order(request):
         "serviceItem": serviceItem,
         "serviceItem_count": serviceItem_count,
     }
-    return render(request, "dashboard/order.html", context)
+    return render(request, "dashboard/booking.html", context)
 
 
 @login_required(login_url="user-login")
 @allowed_users(allowed_roles=[True])
-def order_reject(request, pk):
+def booking_reject(request, pk):
     item = Booking.objects.get(id=pk)
     if request.method == "POST":
         item.delete()
-        return redirect("dashboard-order")
+        return redirect("dashboard-booking")
     context = {"item": item}
-    return render(request, "dashboard/order_reject.html", context)
+    return render(request, "dashboard/booking_reject.html", context)
 
 
 @login_required(login_url="user-login")
 @allowed_users(allowed_roles=[True])
-def order_deleteRecord(request, pk):
+def booking_deleteRecord(request, pk):
     item = Booking.objects.get(id=pk)
     if request.method == "POST":
         item.delete()
-        return redirect("dashboard-order")
+        return redirect("dashboard-booking")
     context = {"item": item}
-    return render(request, "dashboard/order_deleteRecord.html", context)
+    return render(request, "dashboard/booking_deleteRecord.html", context)
 
 
 @login_required(login_url="user-login")
 @allowed_users(allowed_roles=[True])
-def order_approve(request, pk):
+def booking_approve(request, pk):
     booking = Booking.objects.get(id=pk)
     # booking.item = Booking.objects.get(id=pk)
     if request.method == "POST":
@@ -418,14 +462,14 @@ def order_approve(request, pk):
 
         booking.bookingStatus = "Active"
         booking.save()
-        return redirect("dashboard-order")
+        return redirect("dashboard-booking")
     context = {"item": booking}
-    return render(request, "dashboard/order_approve.html", context)
+    return render(request, "dashboard/booking_approve.html", context)
 
 
 @login_required(login_url="user-login")
 @allowed_users(allowed_roles=[True])
-def order_complete(request, pk):
+def booking_complete(request, pk):
     booking = Booking.objects.get(id=pk)
     # booking.item = Booking.objects.get(id=pk)
     if request.method == "POST":
@@ -435,7 +479,7 @@ def order_complete(request, pk):
 
         booking.bookingStatus = "Completed"
         booking.save()
-        return redirect("dashboard-order")
+        return redirect("dashboard-booking")
     context = {"booking": booking}
     return render(request, "dashboard/complete_booking.html", context)
 
@@ -446,12 +490,12 @@ def order_complete(request, pk):
 def service(request):
     staff = User.objects.filter(is_staff=True)
     staff_count = staff.count()
-    product = Item.objects.all()
-    product_count = product.count()
+    item = Item.objects.all()
+    item_count = item.count()
     customer = User.objects.filter(is_staff=False)
     customer_count = customer.count()
-    order = Booking.objects.all()
-    order_count = order.count()
+    booking = Booking.objects.all()
+    booking_count = booking.count()
     category = Category.objects.all()
     category_count = category.count()
     service = Service.objects.all()
@@ -469,14 +513,14 @@ def service(request):
     else:
         form = ServiceForm()
     context = {
-        "product": product,
+        "item": item,
         "form": form,
         "staff": staff,
         "category": category,
         "staff_count": staff_count,
         "customer_count": customer_count,
-        "product_count": product_count,
-        "order_count": order_count,
+        "item_count": item_count,
+        "booking_count": booking_count,
         "category_count": category_count,
         "service": service,
         "service_count": service_count,
@@ -520,12 +564,12 @@ def service_delete(request, pk):
 def serviceItem(request):
     staff = User.objects.filter(is_staff=True)
     staff_count = staff.count()
-    product = Item.objects.all()
-    product_count = product.count()
+    item = Item.objects.all()
+    item_count = item.count()
     customer = User.objects.filter(is_staff=False)
     customer_count = customer.count()
-    order = Booking.objects.all()
-    order_count = order.count()
+    booking = Booking.objects.all()
+    booking_count = booking.count()
     category = Category.objects.all()
     category_count = category.count()
     service = Service.objects.all()
@@ -543,14 +587,14 @@ def serviceItem(request):
     else:
         form = ServiceItemForm()
     context = {
-        "product": product,
+        "item": item,
         "form": form,
         "staff": staff,
         "category": category,
         "staff_count": staff_count,
         "customer_count": customer_count,
-        "product_count": product_count,
-        "order_count": order_count,
+        "item_count": item_count,
+        "booking_count": booking_count,
         "category_count": category_count,
         "service": service,
         "service_count": service_count,

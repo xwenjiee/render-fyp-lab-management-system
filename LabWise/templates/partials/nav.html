@@ -10,7 +10,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         {% if user.is_authenticated %}
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-collapse" style="text-align:right"id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
                     <a class="btn btn-info" href="{% url 'dashboard-index' %}">Dashboard <span

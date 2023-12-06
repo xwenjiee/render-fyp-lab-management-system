@@ -138,8 +138,7 @@ class ProductForm(forms.ModelForm):
             raise forms.ValidationError("Serial numbers are unique to 1 item only.")
         if serialNumber and quantity == 0:
             raise forms.ValidationError(
-                (f"Item with serial number '{serialNumber}' already exists."),
-                params={"serialNumber": serialNumber},
+                "Items with serial numbers cannot have quantity of 0."
             )
         return cleaned_data
 
@@ -336,6 +335,7 @@ class ServiceBookingForm(forms.ModelForm):
         )
         final = first | second
 
+        final2 = Service.objects.all().exclude(booking__in=bookings)
         self.fields["item"].queryset = final
 
         # CONDITION:
@@ -377,6 +377,16 @@ class ServiceBookingForm(forms.ModelForm):
             )
         if startDateTime < timezone.now():
             raise forms.ValidationError("You cannot make a booking from the past!")
+
+        # if startDateTime - timezone.now() > 2:
+        #     # Your code here if startDateTime is more than 2 days from current time
+        #     print("startDateTime is more than 2 days from current time")
+        # else:
+        #     # Your code here if startDateTime is not more than 2 days from current time
+        #     print("startDateTime is not more than 2 days from current time")
+
+        # if startDateTime - timezone.now() > 2:
+        #     raise forms.ValidationError("You cannot make a booking from the past!")
 
         return cleaned_data
 

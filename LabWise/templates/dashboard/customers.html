@@ -4,10 +4,10 @@
 
 {% block content %}
 {% include 'partials/topside.html' %}
-<div class="row my-4">
-    <div class="col-md-4"></div>
-    <div class="col-md-8">
-        <table id="myTable" class="table bg-white">
+<div class="row my-4" style="width: 100%; text-align:center" >
+    <div style=" display:auto;overflow:auto">
+
+        <table id="myTable" class="table bg-white" style="width: 100%;">
             <thead class="bg-info text-white">
                 <tr>
                     <th scope="col">ID</th>
@@ -17,6 +17,7 @@
                     <th scope="col">Last Name</th>     
                     <th scope="col">Date Joined</th>
                     <th scope="col">Last Login</th>
+                    <th scope="col">Activity</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,10 +31,15 @@
                     <td>{{ customer.last_name }}</td>
                     <td>{{ customer.date_joined }}</td>
                     <td>{{ customer.last_login }}</td>
+                    <td>                    <a class="btn btn-danger btn-sm"  style="width:70px"
+                        href="{% url 'dashboard-account-delete-customer' customer.id %}">Delete</a>
+</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
@@ -46,7 +52,6 @@
                 // options
             });
         </script>
-    </div>
 </div>
 
 {% endblock %}

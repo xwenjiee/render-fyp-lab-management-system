@@ -107,7 +107,11 @@ DATABASES["default"] = dj_database_url.parse(
     "postgres://admin:gmIF54PknSEmxSsBJ5T1Fa3F13Gv2Qzi@dpg-clg0uruf27hc739fuklg-a.singapore-postgres.render.com/labwisedb_hy45"
 )
 
+from django.contrib.messages import constants as messages
 
+MESSAGE_TAGS = {
+    messages.ERROR: "danger",
+}
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -133,11 +137,11 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Kuala_Lumpur"
 
 USE_I18N = True
 
-USE_TZ = False
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)

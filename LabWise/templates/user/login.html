@@ -10,6 +10,13 @@
     <div class="border p-3 bg-white">
       <h4>Login Page</h4>
       <hr />
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+          {{ message }}
+      </div>
+      {% endfor %}
+      {% endif %}
       <form method="POST">
         {% csrf_token %} {{ form|crispy }}
         <input class="btn btn-success" type="submit" value="Login" />

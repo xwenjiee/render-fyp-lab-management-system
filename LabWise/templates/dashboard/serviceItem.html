@@ -26,12 +26,7 @@
                 <div id="reader" style="width: 100%"></div>
 
                 <div id="show" style="display: block">
-
-                    <p style="color: blue" id="result"></p>
-
-                    <p id="identify"></p>
-                    <p style="color: green" id="correct">{{booking.item.serialNumber}}</p>
-
+<p></p>
                   </div>
                   
                 {{ form|crispy }}
@@ -48,9 +43,12 @@
                     const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                       if (decodedText) {
                         document.getElementById("show").style.display = "block";
-                        document.getElementById("result").textContent = decodedText;
+                     
                         
                         document.getElementById("serialNumber").value = decodedText;
+                        html5Qrcode.stop();
+                        startScan = false;
+                        document.getElementById("wtf").textContent = "Start Scanning";
                       }
                     };
               
@@ -81,7 +79,7 @@
             </form>
         </div>
     </div>
-    <div class="col-md-8" >
+    <div class="col-md-8"style=" display:flex;overflow:auto" >
 
 
         <table id="myTable" class="table bg-white">

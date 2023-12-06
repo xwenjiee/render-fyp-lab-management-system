@@ -1,0 +1,108 @@
+
+
+    {% extends 'partials/base.html' %}
+    {% block title %}Bookings Page{% endblock %}
+    
+    {% block content %}
+    {% include 'partials/topside.html' %}
+    <div class="row my-4"style="width: 100%;" >
+        <!-- <div class="col-md-4" style="width: 1000px;">
+        </div> -->
+    
+        
+        <!-- <div style="width: 100%;  "> -->
+    <div style=" display:auto;overflow:auto">
+    
+        <table id="myTable" class="table bg-white " style="width: 100%; ">
+            <thead class="bg-info text-white">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Submitted by</th>
+                    <th scope="col">Service Item</th>
+                    <th scope="col">Service Item S.N.</th>
+                    <th scope="col">Service</th>
+                    <th scope="col">Start Date and Time</th>
+                    <th scope="col">End Date and Time</th>
+                    <th scope="col">Booking Status</th>
+                    <th style="text-align:center"scope="col">Activity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in booking %}
+                <tr>
+                    <td>{{ booking.id }}</td>
+                    <td>{{ booking.customer.username }}</td>
+                    {% if booking.item %}
+                    <td  class="alert alert-success" >{{ booking.item }}</td>
+                    {% elif booking.item == None %}
+                    <td  class="alert alert-warning">{{ booking.item }}</td>
+                    {% endif %}
+                    {% if booking.item.serialNumber  %}
+                    <td  class="alert alert-success">{{ booking.item.serialNumber  }}</td>
+                    {% elif booking.item.serialNumber == None %}
+                    <td  class="alert alert-warning">{{ booking.item.serialNumber }}</td>
+                    {% endif %}
+                    {% if booking.service  %}
+                    <td  class="alert alert-success">{{ booking.service }}</td>
+                    {% elif booking.service == None %}
+                    <td  class="alert alert-warning">{{ booking.service }}</td>
+                    {% endif %}
+                    <td>{{ booking.startDateTime }}</td>
+                    <td>{{ booking.endDateTime }}</td>
+
+                    {% if booking.bookingStatus == "Active" %}
+                    <td  class="alert alert-success">{{ booking.bookingStatus }}</td>
+                    {% elif booking.bookingStatus == "Pending Approval" %}
+                    <td  class="alert alert-warning">{{ booking.bookingStatus }}</td>
+                    {% elif booking.bookingStatus == "Completed" %}
+                    <td  class="alert alert-primary">{{ booking.bookingStatus }}</td>
+
+                    {% endif %}
+                    
+
+                    {% if booking.bookingStatus == "Active" %}
+                    <td style=" text-align:center">
+                        <a class="btn btn-success btn-sm " style="width:80px"
+                            href="{% url 'dashboard-booking-complete' booking.id %}">Complete booking</a>
+                    </td>
+                    {% elif booking.bookingStatus == "Pending Approval" %}
+
+                    <td style=" text-align:center">
+                        <a class="btn btn-danger btn-sm mb-1" style="width:80px"
+                            href="{% url 'dashboard-booking-reject' booking.id %}">Reject</a>
+                        <a class="btn btn-success btn-sm" style="width:80px"
+                            href="{% url 'dashboard-booking-approve' booking.id %}">Approve</a>
+                    </td>
+                    {% elif booking.bookingStatus == "Completed" %}
+                    <td style=" text-align:center">
+                        <a class="btn btn-danger btn-sm" style="width:80px"
+                        href="{% url 'dashboard-booking-deleteRecord' booking.id %}">Delete Record</a>
+
+                    </td>
+                   
+                    {% endif %}
+
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
+            <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+      
+            <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+    
+    
+            <script>
+                let table = new DataTable('#myTable', {
+                    // options
+                });
+            </script>
+        <!-- </div> -->
+    </div>
+    
+    {% endblock %}
+

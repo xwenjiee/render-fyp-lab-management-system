@@ -14,7 +14,7 @@
                     <h4>Are you sure, you want to approve this booking?</h4>                </div>
                 {% csrf_token %}
                 {{ form }}
-                <a class="btn btn-secondary " href="{% url 'dashboard-order' %}">Cancel</a>
+                <a class="btn btn-secondary " href="{% url 'dashboard-booking' %}">Cancel</a>
                 <input class="btn btn-success" type="submit" value="Confirm">
             </form>
         </div>

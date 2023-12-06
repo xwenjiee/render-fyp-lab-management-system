@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<div class="row my-4 ">
+<div class="row my-4 mx-2">
     
 <div class="col-md-100 " style="width:100%; margin-bottom:50px">
 
@@ -22,51 +22,59 @@
     </a>
     {% endif %}
     <div class="h4"  style="width:100%; margin-bottom:20px" >Rent Items</div>
-    <table id="myTable" class="table bg-white \">
-        <thead class="bg-info text-white">
-            <tr>
+    <div style=" display:auto;overflow:auto">
+        <table id="myTable" class="table bg-white \">
+            <thead class="bg-info text-white">
+                <tr>
+    
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+    
+    
+                </tr>
+            </thead>
+            <tbody>
+                {% for serviceItem in serviceItem %}
+                <tr>
+    
+                    <td>{{ serviceItem.name }}</td>
+                    <td>{{ serviceItem.desc }}</td>
+    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-                <th scope="col">Name</th>
-                <th scope="col">Description</th>
-
-
-            </tr>
-        </thead>
-        <tbody>
-            {% for serviceItem in serviceItem %}
-            <tr>
-
-                <td>{{ serviceItem.name }}</td>
-                <td>{{ serviceItem.desc }}</td>
-
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
     </div>
     <div class="col-md-100 " style="width:100%">
-        <div class="h4"  style="width:100%; margin-bottom:20px; " >Services</div>
-        <table id="myTable2" class="table bg-white">
-        <thead class="bg-info text-white" >
-            <tr >
-                <th scope="col">Name</th>
-                <th scope="col">Description</th>
+        <div class="h4"  style="width:100%; margin-bottom:20px; " >Book Services</div>
+        <div style=" display:auto;overflow:auto">
+            <table id="myTable2" class="table bg-white">
+                <thead class="bg-info text-white" >
+                    <tr >
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+        
+        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for service in service %}
+                    <tr>
+        
+                        <td>{{ service.name }}</td>
+                        <td>{{ service.desc }}</td>
+                        
+        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 
 
-            </tr>
-        </thead>
-        <tbody>
-            {% for service in service %}
-            <tr>
+        </div>
 
-                <td>{{ service.name }}</td>
-                <td>{{ service.desc }}</td>
-                
-
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />

@@ -6,6 +6,7 @@ from django.contrib.auth import update_session_auth_hash, logout
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required
 from .forms import CreateUserForm
+from django.contrib import messages
 
 # Create your views here.
 
@@ -17,6 +18,7 @@ def register(request):
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, f"Account created successfully. Please log in.")
             return redirect("user-login")
     else:
         form = CreateUserForm()

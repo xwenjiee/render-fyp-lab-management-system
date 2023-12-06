@@ -15,7 +15,7 @@
         {% endfor %}
         {% endif %}
         <div class="card card-body">
-            <h5>Add New Items</h5>
+            <h5>Add New Item</h5>
             <hr>
             <form method="POST">
                 {% csrf_token %}
@@ -25,7 +25,6 @@
     
                 <div id="show" style="display: block">
     
-                    <p style="color: blue" id="result"></p>
     
                     <p id="identify"></p>
                     <p style="color: green" id="correct">{{booking.item.serialNumber}}</p>
@@ -45,9 +44,11 @@
                     const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                       if (decodedText) {
                         document.getElementById("show").style.display = "block";
-                        document.getElementById("result").textContent = decodedText;
                         
                         document.getElementById("serialNumber").value = decodedText;
+                        html5Qrcode.stop();
+                        startScan = false;
+                        document.getElementById("wtf").textContent = "Start Scanning";
                       }
                     };
               
@@ -77,7 +78,7 @@
     </div>
 
 
-    <div class="col-md-8">
+    <div class="col-md-8" style=" display:auto;overflow:auto">
 
 
 
@@ -94,19 +95,19 @@
                 </tr>
             </thead>
             <tbody>
-                {% for product in product %}
+                {% for item in item %}
                 <tr>
-                    <td>{{ product.id }}</td>
-                    <td>{{ product.serialNumber }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.category }}</td>
-                    <td>{{ product.consumable }}</td>
-                    <td>{{ product.quantity }}</td>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.serialNumber }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.consumable }}</td>
+                    <td>{{ item.quantity }}</td>
                     <td style="text-align: center">
                         <a class="btn btn-info btn-sm  mb-1" style="width:70px"
-                            href="{% url 'dashboard-products-edit' product.id %}">Edit</a>
+                            href="{% url 'dashboard-items-edit' item.id %}">Edit</a>
                         <a class="btn btn-danger btn-sm " style="width:70px"
-                            href="{% url 'dashboard-products-delete' product.id %}">Delete</a>
+                            href="{% url 'dashboard-items-delete' item.id %}">Delete</a>
                     </td>
                 </tr>
                 {% endfor %}

@@ -1,0 +1,40 @@
+
+
+{% extends 'partials/base.html' %}
+
+
+{% block title %}Account Delete Page{% endblock %}
+
+{% block content %}
+
+<div class="row my-4">
+    <div class="col-md-6 offset-md-3">
+        <div class="border p-3 bg-white">
+            <h3>Delete Account</h3>
+            <hr>
+            <form method="POST">
+                <div class="alert alert-danger">
+                    <h4>Are you sure, you want to delete account {{ item }}?</h4>
+                </div>
+                {% csrf_token %}
+                {{ form }}                    
+                {% if item.is_staff %}
+                <a class="btn btn-secondary " href="{% url 'dashboard-staff' %}">Cancel</a>
+
+                {% else %}
+                <a class="btn btn-secondary " href="{% url 'dashboard-customers' %}">Cancel</a>
+
+                {% endif %}
+                <input class="btn btn-danger " type="submit" value="Confirm">
+            </form>
+
+        </div>
+    </div>
+</div>
+<script>
+    console.log("{{user}}")
+    console.log("{{item}}")
+</script>
+{% endblock %}
+
+
