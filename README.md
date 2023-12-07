@@ -1,5 +1,6 @@
 # render-fyp-lab-management-system
 My final year project lab management system with online feature. Database and site successfully hosted on Render.
+https://fyp-bpp5.onrender.com/
 
 Installation and Setup Instructions:
 
